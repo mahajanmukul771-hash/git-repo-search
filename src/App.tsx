@@ -16,6 +16,7 @@ export default function App() {
 
     useEffect(() => {
         if (!debouncedQuery) return;
+        
         setLoading(true);
         setError("");
 
