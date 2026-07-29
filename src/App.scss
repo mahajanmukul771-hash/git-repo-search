@@ -1,0 +1,28 @@
+body {
+    background: #f4f4f4;
+    font-family: Arial;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+
+    .search {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .cardGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+        }
+    }
+}
