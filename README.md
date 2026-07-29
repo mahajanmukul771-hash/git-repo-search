@@ -9,7 +9,7 @@ A Vite + React + Typescript git hub repo search project
 - Responsive SCSS for Mob and Desktop
 - Strict Typescript types
 - eslint
-- react hooks
+- react hooks,custom hooks
 
 ## Run locally
 - yarn install
