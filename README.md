@@ -8,6 +8,8 @@ A Vite + React + Typescript git hub repo search project
 - Loading, empty and error states
 - Responsive SCSS for Mob and Desktop
 - Strict Typescript types
+- eslint
+- react hooks
 
 ## Run locally
 - yarn install
