@@ -10,8 +10,8 @@ A Vite + React + Typescript git hub repo search project
 - Strict Typescript types
 
 ## Run locally
-yarn install
-yarn dev
+- yarn install
+- yarn dev
 
 ## Production build
 yarn build
