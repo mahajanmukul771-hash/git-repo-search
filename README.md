@@ -12,6 +12,8 @@ https://mahajanmukul771-hash.github.io/git-repo-search/
 - Strict Typescript types
 - eslint
 - react hooks,custom hooks
+- semantic elements
+- Disable pagination while loading
 
 ## Run locally
 - yarn install
