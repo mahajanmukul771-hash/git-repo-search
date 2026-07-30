@@ -2,31 +2,36 @@ import './Pagination.scss'
 interface Props {
     page: number;
     totalPages: number;
+    disabled?: boolean;
     onPageChange: (page: number) => void;
 }
 
 export default function Pagination({
     page,
     totalPages,
+    disabled = false,
     onPageChange,
 }: Props) {
+
+    const isPreviousDisabled = disabled || page <= 1
+    const isNextDisabled = disabled || page >= totalPages
     return (
-        <div className="pagination">
+        <nav className="pagination" aria-label='Search result pagination'>
             <button
-                disabled={page === 1}
+                disabled={isPreviousDisabled}
                 onClick={() => onPageChange(page - 1)}
             >
                 Previous
             </button>
             <span>
-                {page} / {totalPages}
+                Page {page} of {totalPages}
             </span>
             <button
-                disabled={page === totalPages}
+                disabled={isNextDisabled}
                 onClick={() => onPageChange(page + 1)}
             >
                 Next
             </button>
-        </div>
+        </nav>
     );
 }
