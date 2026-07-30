@@ -2,80 +2,123 @@ import { useEffect, useState } from "react";
 import Pagination from "./components/Pagination/Pagination";
 import useDebounce from "./hooks/useDebounce";
 import { searchRepositories } from "./api/client";
-import { Repo } from "./types";
+import type { Repo } from "./types";
 import "./App.scss";
+import { MAX_PAGES, RESULTS_PER_PAGE } from "./constant";
 
 export default function App() {
     const [query, setQuery] = useState("react");
-    const debouncedQuery = useDebounce(query);
     const [repos, setRepos] = useState<Repo[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        if (!debouncedQuery) return;
-        
-        setLoading(true);
-        setError("");
+    const debouncedQuery = useDebounce(query.trim());
 
-        searchRepositories(debouncedQuery, page)
-            .then((data) => {
+    useEffect(() => {
+        if (!debouncedQuery) {
+            setRepos([])
+            setTotalPages(0)
+            setError("")
+            setLoading(false)
+            return;
+        }
+
+        let ignoreResponse = false
+        const fetchRepositories = async () => {
+            setLoading(true);
+            setError("");
+            try {
+                const data = await searchRepositories(debouncedQuery, page)
+
+                if (ignoreResponse) return
+
                 setRepos(data.items);
 
                 setTotalPages(Math.min(
-                    Math.ceil(data.total_count / 10),
-                    100
+                    Math.ceil(data.total_count / RESULTS_PER_PAGE),
+                    MAX_PAGES
                 ));
-            })
-            .catch((err) => {
-                setError(err.message);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+
+            } catch (error: unknown) {
+                if (ignoreResponse) return
+
+                setRepos([])
+                setTotalPages(0)
+                setError(error instanceof Error ? error.message : 'Unable to fetch repositories')
+
+            }
+            finally {
+                if (!ignoreResponse) {
+                    setLoading(false)
+                }
+            }
+
+
+        }
+
+        void fetchRepositories()
+
+        return () => {
+            ignoreResponse = true
+        }
 
     }, [debouncedQuery, page]);
 
-    useEffect(() => {
-        setPage(1);
-    }, [debouncedQuery]);
+    const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(event.target.value)
+        setPage(1)
+    }
 
+    const hasResults = repos.length > 0
     return (
-        <div className="container">
-            <h1>Github Repositories Search</h1>
+        <main className="container">
+            <h1>Github Repository Search</h1>
+
+            <label className="searchLabel" htmlFor="repository-search">
+                Search Repositories
+            </label>
+
             <input
+                id="repository-search"
+                type="search"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={handleQueryChange}
                 placeholder="Search Github repositories..."
                 className="search"
             />
-            {loading && <h3>Loading...</h3>}
-            {error && <h3>{error}</h3>}
+            {loading && (<p role="status" aria-live="polite">Loading...</p>)}
+            {error && (<p className="error" role="alert">{error}</p>)}
 
-            {!loading && <div className="cardGroup">
-                {repos.map((repo) => (
-                    <div className="card">
-                        <h3>{repo.full_name}</h3>
-                        <p>{repo.description}</p>
-                        <a
-                            href={repo.html_url}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            View Repository
-                        </a>
-                    </div>
-                ))}
-            </div>
+            {!loading && !error && debouncedQuery && !hasResults && (<p>No repositories found.</p>)}
+
+            {!loading && hasResults && (
+
+                <section className="cardGroup" aria-label="Repository search results">
+                    {repos.map((repo) => (
+                        <article className="card" key={repo.id}>
+                            <h2>{repo.full_name}</h2>
+                            <p>{repo.description}</p>
+                            <a
+                                href={repo.html_url}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                View Repository
+                            </a>
+                        </article>
+                    ))}
+                </section>
+            )
             }
 
-            <Pagination
+            {totalPages > 1 && <Pagination
                 page={page}
                 totalPages={totalPages}
                 onPageChange={setPage}
-            />
-        </div>
+                disabled={loading}
+            />}
+        </main>
     );
 }
