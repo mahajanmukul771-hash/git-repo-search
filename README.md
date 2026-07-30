@@ -6,6 +6,7 @@ https://mahajanmukul771-hash.github.io/git-repo-search/
 
 ## Features
 - Debounced search requests
+- Deployed to github pages
 - API-driven pagination using 'query'and 'page'
 - Loading, empty and error states
 - Responsive SCSS for Mob and Desktop
