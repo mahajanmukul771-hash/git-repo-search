@@ -98,7 +98,7 @@ export default function App() {
                 <section className="cardGroup" aria-label="Repository search results">
                     {repos.map((repo) => (
                         <article className="card" key={repo.id}>
-                            <h2>{repo.full_name}</h2>
+                            <p className="repoName">{repo.full_name}</p>
                             <p>{repo.description}</p>
                             <a
                                 href={repo.html_url}
