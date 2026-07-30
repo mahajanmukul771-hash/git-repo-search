@@ -1,4 +1,9 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
     background: #f4f4f4;
     font-family: Arial;
 }
@@ -8,9 +13,25 @@ body {
     flex-direction: column;
     padding: 24px;
 
+    .searchLabel {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
     .search {
         padding: 12px;
         margin-bottom: 20px;
+        border: 1px solid #767676;
+        border-radius: 6px;
+
+        &:focus-visible {
+            outline: 3px solid currentColor;
+            outline-offset: 2px;
+        }
+    }
+
+    .error {
+        color: #b00020;
     }
 
     .cardGroup {
@@ -19,10 +40,14 @@ body {
         gap: 16px;
 
         .card {
-            background: white;
+            background: #fff;
             padding: 16px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+
+            h2 {
+                margin-top: 0;
+            }
         }
     }
 }
